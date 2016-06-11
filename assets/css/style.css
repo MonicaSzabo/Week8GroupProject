@@ -6,6 +6,11 @@
  * Made By MaterializeCSS.com
  */
 
+ 
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
 nav ul a,
 nav .brand-logo {
   color: #444;
