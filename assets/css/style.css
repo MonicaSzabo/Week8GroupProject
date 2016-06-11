@@ -66,3 +66,8 @@ p {
 footer.page-footer {
   margin: 0;
 }
+
+#map {
+  width: 500px;
+  height: 400px;
+}
