@@ -6,6 +6,7 @@
   <title>Untitled App</title>
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
   <link href="assets/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="assets/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
@@ -22,12 +23,6 @@
         </div>
 <!--       <nav>
         <div class="nav-wrapper">
-<<<<<<< HEAD
->>>>>>> 1897239d5fd670bf00c1b88345edeee89fdd3562
-=======
->>>>>>> 10a5c5788c1be67ac593ab877aac3b677b1cb93a
->>>>>>> jesshust-master
-
         </div>
       </nav> -->
 
@@ -52,7 +47,6 @@
       </div>
     </div>
     <div class="parallax"><img src="assets/images/backgroundImage1.jpg" alt="City"></div>
-    <div class="parallax"><img src="assets/images/backgroundImage1.jpg" alt="City"></div>
   </div>
 
 
@@ -60,14 +54,34 @@
 
     <div class="section">
     <div class="row center">
-        <h5 class="header col s12 light">Make Plans for tonight! Start your Search here.</h5>
+        <h5 class="header col s12 light">Make Plans for tonight! Search your city for 10 random events in your area. </h5>
     </div>
     <input type="text" name="search" id="city-input" placeholder="Enter your location here...">
     <div class="temp"></div>
   </div>
 
-      <!--   Icon Section   -->
-      <div class="row">
+      <!--   Results Section   -->
+    <div class = "row">
+      <div id="map"></div>
+      <div class="row center">
+      <h5 class ="header col s12 light">Results</h5>
+      <table class="table table-hover table-responsive">
+        <thead>
+          
+          <tr>
+          <th></th>
+          <th>Event</th>
+          <th>Description</th>
+          <th>Link</th>
+       
+          </tr>
+        </thead>
+      <tbody id="display"></tbody>
+
+      </table>
+
+
+<!--       <div class="row">
         <div class="col s12 m4">
           <div class="icon-block">
             <h2 class="center black-text"><i class="material-icons">schedule</i></h2>
@@ -94,21 +108,20 @@
             <p class="light">Jimmy Jr. had a chance to ride the Tina truck, but now it's headed straight for Joshville. Toot-toot. I've logged over 3,000 fantasy hours on my relationship with Jimmy Jr. You don't just throw that away. Dr. Yap, once I was into you, but after seeing you torture my father, I think we should just be friends with dental benefits.</p>
           </div>
         </div>
-      </div>
+      </div> -->
 
     </div>
   </div>
 
 
-  <div class="parallax-container valign-wrapper">
+
+  <div class="parallax-container valign-wrapper"> <!--add results here -->
     <div class="section no-pad-bot">
       <div class="container">
         <div class="row center">
-          <h5 class="header col s12 light">Find the most up-to-date events</h5>
         </div>
       </div>
     </div>
-    <div class="parallax"><img src="assets/images/backgroundImage2.jpg" alt="Austin Skyline img 2"></div>
   </div>
 
   <div class="container">
@@ -134,7 +147,7 @@
         </div>
       </div>
     </div>
-    <div class="parallax"><img src="assets/images/backgroundImage3.jpg" alt="Downtown Austin img 3"></div>
+    <div class="parallax"><img src="assets/images/backgroundImage2.jpg" alt="Downtown Austin img 3"></div>
 
   </div>
 
