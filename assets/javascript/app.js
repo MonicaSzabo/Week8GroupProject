@@ -29,12 +29,26 @@ $(document).ready(function() {
                     "<br>Latitude: " + events[i].latitude + "<br>Description: " + events[i].description + "<br>===========<br>");
             }
 
-            
+
 
             console.log(events);
         });
 
     }
-	
+
     searchByCity();
+
+
+//==================================== map feature ========================================
+
+  function initMap() {
+    var mapDiv = document.getElementById('map');
+    var map = new google.maps.Map(mapDiv, {
+      center: {lat: 30.503, lng: -97.689},
+      zoom: 8
+    });
+  }
+
+
+
 });
