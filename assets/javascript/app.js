@@ -2,8 +2,8 @@ $(document).ready(function() {
     var LatLong = [];
 
     function searchByCity() {
-        var queryCity = $('#city-input').val().trim();
-        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=" + queryCity;
+        //var queryCity = $('#city-input').val().trim();
+        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=Austin";
 
         $.ajax({
             url: queryURL,
@@ -18,18 +18,16 @@ $(document).ready(function() {
             var description = "";
 
             for(var i = 0; i < events.length; i++) {
-                if(events[i].description === null) {
-                    description = "There is no description available";
-                }
-                else {
-                    description = events[i].description;
-                }
-
-                $(".temp").append(events[i].title + "<br>Longitude: " + events[i].longitude +
-                    "<br>Latitude: " + events[i].latitude + "<br>Description: " + events[i].description + "<br>===========<br>");
-            }
+            	LatLong.push({
+            		lat: events[i].latitude,
+            		lng:  events[i].longitude});
 
 
+           		$('.display').append("<h3><a href=" + events[i].venue_url +" target='_blank'>" + events[i].title + "</a></h3>" +
+					"<br>" + events[i].venue_address + "<br>" + events[i].city_name + ", " + events[i].region_abbr +
+					"<br>" + moment(events[i].start_time).format('MMMM Do YYYY, h:mm:ss A') + "<br><br>");
+
+           	}
 
             console.log(events);
         });
@@ -37,7 +35,6 @@ $(document).ready(function() {
     }
 
     searchByCity();
-
 
 //==================================== map feature ========================================
 
