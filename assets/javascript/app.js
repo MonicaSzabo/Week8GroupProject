@@ -31,4 +31,18 @@ $(document).ready(function() {
     	console.log(events);
     });
 
+
+
+//==================================== map feature ========================================
+
+  function initMap() {
+    var mapDiv = document.getElementById('map');
+    var map = new google.maps.Map(mapDiv, {
+      center: {lat: 30.503, lng: -97.689},
+      zoom: 8
+    });
+  }
+
+
+
 });
