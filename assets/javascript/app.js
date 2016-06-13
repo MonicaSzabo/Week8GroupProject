@@ -1,39 +1,44 @@
 $(document).ready(function() {
-    var LatLong = [];
+    var mapData = [];
 
     function searchByCity() {
-        //var queryCity = $('#city-input').val().trim();
-        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=Austin";
-
-        $.ajax({
-            url: queryURL,
-            method: "GET",
-            dataType: 'jsonp',
-            data: {
-                format: "jsonp",
-                apikey: 'crQBBZznzX5Sn2R4',
-            }
-        }).done(function(response){
-            var events = response.events.event;
-            var description = "";
-
-            for(var i = 0; i < events.length; i++) {
-            	LatLong.push({
-            		lat: events[i].latitude,
-            		lng:  events[i].longitude});
+    	$('#new-city').on('submit', function(){
+	        var queryCity = $('#city-input').val().trim();
+	        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=" + queryCity;
+	        console.log(queryURL);
 
 
-           		$('.display').append("<h3><a href=" + events[i].venue_url +" target='_blank'>" + events[i].title + "</a></h3>" +
-					"<br>" + events[i].venue_address + "<br>" + events[i].city_name + ", " + events[i].region_abbr +
-					"<br>" + moment(events[i].start_time).format('MMMM Do YYYY, h:mm:ss A') + "<br><br>");
+	        $.ajax({
+	            url: queryURL,
+	            method: "GET",
+	            dataType: 'jsonp',
+	            data: {
+	                format: "jsonp",
+	                apikey: 'crQBBZznzX5Sn2R4',
+	            }
+	        }).done(function(response){
+	            var events = response.events.event;
+	            var description = "";
 
-           	}
+	            for(var i = 0; i < events.length; i++) {
+	            	mapData.push({
+	            		name: events[i].title,
+	            		lat: events[i].latitude,
+	            		lng:  events[i].longitude});
 
-            console.log(events);
-        });
 
+	           		$('#display').append("<h3><a href=" + events[i].venue_url +" target='_blank'>" + events[i].title + "</a></h3>" +
+						"<br>" + events[i].venue_address + "<br>" + events[i].city_name + ", " + events[i].region_abbr +
+						"<br>" + moment(events[i].start_time).format('MMMM Do YYYY, h:mm:ss A') + "<br><br>");
+
+	           	}
+
+	            console.log(mapData);
+	        });
+
+	        return false;
+	    });
     }
-
     searchByCity();
 
 //==================================== map feature ========================================
