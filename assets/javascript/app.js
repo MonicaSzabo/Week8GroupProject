@@ -34,12 +34,13 @@ $(document).ready(function() {
 	           	}
 
 	            console.log(mapData);
+                mapStuff(mapData);
 	        });
 
 	        return false;
 	    });
     }
-    searchByCity();
+
 
 //==================================== map feature ========================================
 
@@ -90,45 +91,50 @@ $(document).ready(function() {
     })();
 
     // button to trigger adding the markers and moving to the area that the markers are from
-    $('.testButton').on('click', function(){
-mapStuff();
-})
+//    $('.testButton').on('click', function(){
+//mapStuff();
 
 
-function mapStuff() {
+
+function mapStuff(mapData) {
 
     // Display multiple markers on a map
     var infoWindow = new google.maps.InfoWindow(), marker, i;
 
     // Loop through our array of markers & place each one on the map
-    for( i = 0; i < markers.length; i++ ) {
-        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+    for( i = 0; i < mapData.length; i++ ) {
+        var position = new google.maps.LatLng(mapData[i].lat, mapData[i].lng);
         bounds.extend(position);
         marker = new google.maps.Marker({
             position: position,
             map: map,
-            title: markers[i][0]
+            title: mapData[i].name
         });
 
         // Allow each marker to have an info window
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-                infoWindow.setContent(infoWindowContent[i][0]);
+                //infoWindow.setContent(infoWindowContent[i][0]);
+                infoWindow.setContent('<div class="info_content">' + '<h3>Broken Spoke</h3>' +
+        '<p>' + mapData[i].name+'</p>' + '</div>');
                 infoWindow.open(map, marker);
             }
         })(marker, i));
 
+marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
         // Automatically center the map fitting all markers on the screen
         map.fitBounds(bounds);
     }
 
     // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
     var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
-        this.setZoom(14); // if markers are too spread out this might cause some of them to not be visable on the map
+        //this.setZoom(14); // if markers are too spread out this might cause some of them to not be visable on the map
         google.maps.event.removeListener(boundsListener);
     });
 
     };
 
-
+searchByCity();
 });
+
+//})
