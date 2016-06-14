@@ -85,13 +85,13 @@ $(document).ready(function() {
     searchByCity();
     firebaseStore();
 
-//==================================== map feature ========================================
+    //==================================== map feature ========================================
 
-//=============== dummy data needed from event API==================================
+    //=============== dummy data needed from event API==================================
 
-//dummy eventURL string
-var urlString = "http://austin.eventful.com/venues/lake-austin-marina-/V0-001-009303062-2?utm_source=apis&utm_medium=apim&utm_campaign=apic"
-//end dummy data ================================================================
+    //dummy eventURL string
+    var urlString = "http://austin.eventful.com/venues/lake-austin-marina-/V0-001-009303062-2?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+    //end dummy data ================================================================
 
     var map;
     var bounds = new google.maps.LatLngBounds();
@@ -105,53 +105,53 @@ var urlString = "http://austin.eventful.com/venues/lake-austin-marina-/V0-001-00
         });
     })();
 
-function mapStuff(mapData) {
+    function mapStuff(mapData) {
+        // Display multiple markers on a map
+        var infoWindow = new google.maps.InfoWindow(), marker, i;
 
-    // Display multiple markers on a map
-    var infoWindow = new google.maps.InfoWindow(), marker, i;
+        // Loop through our array of markers & place each one on the map
+        for( i = 0; i < mapData.length; i++ ) {
+            //trap for missing lat or lng
+            if (mapData[i].lat === null || mapData[i].lng === null) {
+                console.log("mapData[i].lat = "+mapData[i].lat + " mapData[i].lng = " + mapData[i].lng + " i = "+i)
+            }
+            else{
+                            var position = new google.maps.LatLng(mapData[i].lat, mapData[i].lng);
+            bounds.extend(position);
+            marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: mapData[i].name
+            });
 
-    // Loop through our array of markers & place each one on the map
-    for( i = 0; i < mapData.length; i++ ) {
-        var position = new google.maps.LatLng(mapData[i].lat, mapData[i].lng);
-        bounds.extend(position);
-        marker = new google.maps.Marker({
-            position: position,
-            map: map,
-            title: mapData[i].name
-        });
-
-        // Allow each marker to have an info window
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            return function() {
-                //infoWindow.setContent(infoWindowContent[i][0]);
-                infoWindow.setContent('<div class="info_content">' +
+            // Allow each marker to have an info window
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                return function() {
+                    //infoWindow.setContent(infoWindowContent[i][0]);
+                    infoWindow.setContent('<div class="info_content">' +
                                         '<h3>' + mapData[i].name+'</h3>' +
                                         '<p>' + mapData[i].name+'</p>' +
-                                        '<p><a href="'+urlString+'" target="_blank">Click to open Event URL in new tab</a></p>'+
-                                      '</div>');
-                 marker.addListener('click', function() {
-    infoWindow.open(map, marker);
-  });
+                                        '<p><a href="'+mapData[i].url+'" target="_blank">Click to open Event URL in new tab</a></p>'+
+                                        '</div>');
+                    marker.addListener('click', function() {
+                        infoWindow.open(map, marker);
+                    });
+                }
+            })(marker, i));
+            //add code to change the color desired
+            if(i === 0){
+                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
             }
-        })(marker, i));
-
- //marker.addListener('click', function() {
- //   infowindow.open(map, marker);
-//  });
-marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
-        // Automatically center the map fitting all markers on the screen
-        map.fitBounds(bounds);
-    }
-
-    // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
-    var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
-        //this.setZoom(14); // if markers are too spread out this might cause some of them to not be visable on the map
-        google.maps.event.removeListener(boundsListener);
-    });
-
+            else if(i>0 && i<6){
+                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+            }
+            else{
+                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
+            }
+            // Automatically center the map fitting all markers on the screen
+            map.fitBounds(bounds);
+            }
+        }
     };
-
-searchByCity();
 });
 
-//})
