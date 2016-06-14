@@ -5,8 +5,9 @@ $(document).ready(function() {
     	$('#new-city').on('submit', function(){
 	        var queryCity = $('#city-input').val().trim();
 	        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=" + queryCity;
-	        console.log(queryURL);
 
+	        mapData = [];
+	        $('#display').empty();
 
 	        $.ajax({
 	            url: queryURL,
@@ -23,11 +24,13 @@ $(document).ready(function() {
 	            for(var i = 0; i < events.length; i++) {
 	            	mapData.push({
 	            		name: events[i].title,
+	            		url: events[i].venue_url,
 	            		lat: events[i].latitude,
 	            		lng:  events[i].longitude});
 
 
-	           		$('#display').append("<h3><a href=" + events[i].venue_url +" target='_blank'>" + events[i].title + "</a></h3>" +
+	           		$('#display').append("<a href=" + events[i].venue_url +" class='eventLink' data-url=" +
+	           			events[i].venue_url + " target='_blank'>" + events[i].title + "</a>" +
 						"<br>" + events[i].venue_address + "<br>" + events[i].city_name + ", " + events[i].region_abbr +
 						"<br>" + moment(events[i].start_time).format('MMMM Do YYYY, h:mm:ss A') + "<br><br>");
 
@@ -39,7 +42,47 @@ $(document).ready(function() {
 	        return false;
 	    });
     }
+
+    function firebaseStore() {
+    	var fb = new Firebase("https://events04.firebaseio.com/");
+
+    	var popEvents;
+    	var url = "";
+
+    	$('.eventLink').on('click', function() {
+    		var test = $(this).attr('data-url');
+
+    		fb.push({
+    			url: test,
+    		});
+
+    		console.log("Is this working");
+
+    		return false;
+
+    	});
+
+  //   	$('#my-form').on('submit', function() {
+		// 	name = $('#nameinput').val().trim();
+		// 	destination = $('#destinationinput').val().trim(); 
+		// 	firstTrainTime = $('#firstTraininput').val().trim();
+		// 	frequency = $('#frequencyinput').val().trim();
+
+		// 	fb.push({
+		// 		name: name,
+		// 		destination: destination,
+		// 		firstTrainTime: firstTrainTime,
+		// 		frequency: frequency,
+		// 	});
+
+		// 	//Reload needed for the removal to work on last element
+		// 	location.reload();
+		// 	return false;
+		// })
+    }
+
     searchByCity();
+    firebaseStore();
 
 //==================================== map feature ========================================
 
