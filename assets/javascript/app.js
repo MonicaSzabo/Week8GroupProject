@@ -1,12 +1,18 @@
 $(document).ready(function() {
     var mapData = [];
+
     var fb = new Firebase("https://events04.firebaseio.com/");
-	var url = "";
+    var cityStore = "";
+
 
     function searchByCity() {
     	$('#new-city').on('submit', function(){
 	        var queryCity = $('#city-input').val().trim();
 	        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=" + queryCity;
+
+            fb.set({
+                city: queryCity
+            });
 
 	        mapData = [];
 	        $('#display').empty();
@@ -24,18 +30,26 @@ $(document).ready(function() {
 	            var description = "";
 
 	            for(var i = 0; i < events.length; i++) {
-	            	mapData.push({
-	            		name: events[i].title,
-	            		url: events[i].venue_url,
-	            		lat: events[i].latitude,
-	            		lng:  events[i].longitude});
+                    //Calculates how far away the event is
+                    var daysDiff = moment(events[i].start_time).diff(moment(), "days");
+
+                    //Only will show days in the future, won't show past events
+                    if(daysDiff > -1) {
+
+                        mapData.push({
+                            name: events[i].title,
+                            url: events[i].venue_url,
+                            lat: events[i].latitude,
+                            lng:  events[i].longitude,
+                            daysAway: daysDiff
+                        });
 
 
-	           		$('#display').append("<a href=" + events[i].venue_url +" class='eventLink' data-url=" +
-	           			events[i].venue_url + " target='_blank'>" + events[i].title + "</a>" +
-						"<br>" + events[i].venue_address + "<br>" + events[i].city_name + ", " + events[i].region_abbr +
-						"<br>" + moment(events[i].start_time).format('MMMM Do YYYY, h:mm:ss A') + "<br><br>");
-
+                        $('#display').append("<a href=" + events[i].venue_url +" class='eventLink' data-url=" +
+                            events[i].venue_url + " target='_blank'>" + events[i].title + "</a>" +
+                            "<br>" + events[i].venue_address + "<br>" + events[i].city_name + ", " + events[i].region_abbr +
+                            "<br>" + moment(events[i].start_time).format('MMMM Do YYYY, h:mm A') + "<br><br>");
+                    }
 	           	}
 
 	            console.log(mapData);
@@ -47,49 +61,7 @@ $(document).ready(function() {
     }
 
 
-    function firebaseStore() {
-	    fb.push({
-			url: test,
-		});
-
-		console.log("Is this working");
-
-		return false;
-	}
-
-	$('a[href$=".html"]').click(function()
-    {
-        firebaseStore(this.href);
-    });
-
     searchByCity();
-    //firebaseStore();
-
-    	// $('.eventLink').on('click', function() {
-    	// 	var test = $(this).attr('data-url');
-
-
-
-    	// });
-
-  //   	$('#my-form').on('submit', function() {
-		// 	name = $('#nameinput').val().trim();
-		// 	destination = $('#destinationinput').val().trim();
-		// 	firstTrainTime = $('#firstTraininput').val().trim();
-		// 	frequency = $('#frequencyinput').val().trim();
-
-		// 	fb.push({
-		// 		name: name,
-		// 		destination: destination,
-		// 		firstTrainTime: firstTrainTime,
-		// 		frequency: frequency,
-		// 	});
-
-		// 	//Reload needed for the removal to work on last element
-		// 	location.reload();
-		// 	return false;
-		// })
-
 
 
     //==================================== map feature ========================================
