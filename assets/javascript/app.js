@@ -46,32 +46,8 @@ $(document).ready(function() {
 
 //=============== dummy data needed from event API==================================
 
-    // Multiple Markers
-    // array for market placement and hover data
-    //'hover data (string)', lat #, lng #
-    var markers = [
-        ['event 1 name', 30.243241, -97.782064],
-        ['event 2 name', 30.24907, -97.75032],
-        ['event 3 name', 30.2498122, -97.7527743],
-        ['event 4 name', 30.2671123, -97.7528579]
-    ];
-
-
-    // Info Window Content
-    var infoWindowContent = [
-        ['<div class="info_content">' +
-        '<h3>Broken Spoke</h3>' +
-        '<p>Live music & boot-scootin , plus beer & chicken-fried steak since 1964</p>' + '</div>'],
-        ['<div class="info_content">' +
-        '<h3>Home Slice</h3>' +
-        '<p>Thin-crust slices & pies for dining in or carry out, open late for takeaway on weekends.</p>' +'</div>'],
-        ['<div class="info_content">' +
-        '<h3>Gourdoughs Big. Fat. Donuts.</h3>' +
-        '<p>Ironic names & unique toppings on fried-dough treats served until late-night from a vintage trailer.</p>' + '</div>'],
-        ['<div class="info_content">' +
-        '<h3>Sullivans Steakhouse</h3>' +
-        '<p>Steakhouse chain serving beef, seafood & cocktails in swanky surrounds with live music.</p>' + '</div>']
-    ];
+//dummy eventURL string
+var urlString = "http://austin.eventful.com/venues/lake-austin-marina-/V0-001-009303062-2?utm_source=apis&utm_medium=apim&utm_campaign=apic"
 //end dummy data ================================================================
 
     var map;
@@ -82,19 +58,9 @@ $(document).ready(function() {
         var mapDiv = document.getElementById('map');
         map = new google.maps.Map(mapDiv, {
         center: {lat: 30.294797, lng: -97.739589},
-        //dummy test data to prove the move on marker works
-        //comment this in and the map starts in London
-        //center: {lat: 51.503454, lng: -0.119562},
-        //end dummy city data
         zoom: 10
         });
     })();
-
-    // button to trigger adding the markers and moving to the area that the markers are from
-//    $('.testButton').on('click', function(){
-//mapStuff();
-
-
 
 function mapStuff(mapData) {
 
@@ -115,12 +81,20 @@ function mapStuff(mapData) {
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
                 //infoWindow.setContent(infoWindowContent[i][0]);
-                infoWindow.setContent('<div class="info_content">' + '<h3>Broken Spoke</h3>' +
-        '<p>' + mapData[i].name+'</p>' + '</div>');
-                infoWindow.open(map, marker);
+                infoWindow.setContent('<div class="info_content">' +
+                                        '<h3>' + mapData[i].name+'</h3>' +
+                                        '<p>' + mapData[i].name+'</p>' +
+                                        '<p><a href="'+urlString+'" target="_blank">Click to open Event URL in new tab</a></p>'+
+                                      '</div>');
+                 marker.addListener('click', function() {
+    infoWindow.open(map, marker);
+  });
             }
         })(marker, i));
 
+ //marker.addListener('click', function() {
+ //   infowindow.open(map, marker);
+//  });
 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
         // Automatically center the map fitting all markers on the screen
         map.fitBounds(bounds);
