@@ -1,5 +1,7 @@
 $(document).ready(function() {
     var mapData = [];
+    var fb = new Firebase("https://events04.firebaseio.com/");
+	var url = "";
 
     function searchByCity() {
     	$('#new-city').on('submit', function(){
@@ -43,24 +45,31 @@ $(document).ready(function() {
 	    });
     }
 
+
     function firebaseStore() {
-    	var fb = new Firebase("https://events04.firebaseio.com/");
+	    fb.push({
+			url: test,
+		});
 
-    	var popEvents;
-    	var url = "";
+		console.log("Is this working");
 
-    	$('.eventLink').on('click', function() {
-    		var test = $(this).attr('data-url');
+		return false;
+	}
 
-    		fb.push({
-    			url: test,
-    		});
+	$('a[href$=".html"]').click(function()
+    {
+        firebaseStore(this.href);
+    });
 
-    		console.log("Is this working");
+    searchByCity();
+    //firebaseStore();
 
-    		return false;
+    	// $('.eventLink').on('click', function() {
+    	// 	var test = $(this).attr('data-url');
 
-    	});
+
+
+    	// });
 
   //   	$('#my-form').on('submit', function() {
 		// 	name = $('#nameinput').val().trim();
@@ -79,10 +88,8 @@ $(document).ready(function() {
 		// 	location.reload();
 		// 	return false;
 		// })
-    }
 
-    searchByCity();
-    firebaseStore();
+
 
 //==================================== map feature ========================================
 
