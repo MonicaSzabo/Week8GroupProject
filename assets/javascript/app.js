@@ -1,7 +1,5 @@
 $(document).ready(function() {
     var mapData = [];
-    var fb = new Firebase("https://events04.firebaseio.com/");
-	var url = "";
 
     function searchByCity() {
     	$('#new-city').on('submit', function(){
@@ -46,31 +44,24 @@ $(document).ready(function() {
 	    });
     }
 
-
     function firebaseStore() {
-	    fb.push({
-			url: test,
-		});
+    	var fb = new Firebase("https://events04.firebaseio.com/");
 
-		console.log("Is this working");
+    	var popEvents;
+    	var url = "";
 
-		return false;
-	}
+    	$('.eventLink').on('click', function() {
+    		var test = $(this).attr('data-url');
 
-	$('a[href$=".html"]').click(function()
-    {
-        firebaseStore(this.href);
-    });
+    		fb.push({
+    			url: test,
+    		});
 
-    searchByCity();
-    //firebaseStore();
+    		console.log("Is this working");
 
-    	// $('.eventLink').on('click', function() {
-    	// 	var test = $(this).attr('data-url');
+    		return false;
 
-
-
-    	// });
+    	});
 
   //   	$('#my-form').on('submit', function() {
 		// 	name = $('#nameinput').val().trim();
@@ -89,8 +80,10 @@ $(document).ready(function() {
 		// 	location.reload();
 		// 	return false;
 		// })
+    }
 
-
+    searchByCity();
+    firebaseStore();
 
     //==================================== map feature ========================================
 
@@ -102,17 +95,23 @@ $(document).ready(function() {
 
     var map;
     var bounds = new google.maps.LatLngBounds();
-
+    var markersArray = [];
     // map placeholder centered on Austin
     (function () {
         var mapDiv = document.getElementById('map');
         map = new google.maps.Map(mapDiv, {
-        center: {lat: 30.294797, lng: -97.739589},
+        center: {lat: 50.294797, lng: -97.739589},
         zoom: 10
         });
+        //initialLocation = initialize();
+        //map.setCenter(initialLocation);
+        //var x = new google.maps.Marker(initialLocation);
     })();
 
     function mapStuff(mapData) {
+        //just incase there are markers already on the map
+        //clear markers
+        clearMarkers(markersArray);
         // Display multiple markers on a map
         var infoWindow = new google.maps.InfoWindow(), marker, i;
 
@@ -130,7 +129,7 @@ $(document).ready(function() {
                 map: map,
                 title: mapData[i].name
             });
-
+            markersArray.push(marker);
             // Allow each marker to have an info window
             google.maps.event.addListener(marker, 'click', (function(marker, i) {
                 return function() {
@@ -160,5 +159,58 @@ $(document).ready(function() {
             }
         }
     };
+    function clearMarkers(markersArray){
+        //passed an array with the gogle maps marker objects saved when the markers are created
+        for (var i = 0; i < markersArray.length; i++) {
+            markersArray[i].setMap(null);
+        }
+        markersArray = [];
+        bounds = new google.maps.LatLngBounds();
+    }
+//=====================================================
+//geolocation==========================================
+//=====================================================
+/*var initialLocation;
+var siberia = new google.maps.LatLng(60, 105);
+var austin = new google.maps.LatLng(30.294797, -97.739589);
+var browserSupportFlag =  new Boolean();
+
+function initialize() {
+  var myOptions = {
+    zoom: 6,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+//  var map = new google.maps.Map(document.getElementById("map"), myOptions);
+map = new google.maps.Map(document.getElementById("map"), myOptions);
+  // Try W3C Geolocation (Preferred)
+  if(navigator.geolocation) {
+    browserSupportFlag = true;
+    navigator.geolocation.getCurrentPosition(function(position) {
+      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+      map.setCenter(initialLocation);
+    }, function(err) {
+      // handleNoGeolocation(browserSupportFlag);
+      console.log(err)
+    });
+  }
+  // Browser doesn't support Geolocation
+  else {
+    browserSupportFlag = false;
+    handleNoGeolocation(browserSupportFlag);
+  }
+
+  function handleNoGeolocation(errorFlag) {
+    if (errorFlag == true) {
+      alert("Geolocation service failed.");
+      initialLocation = austin;
+    } else {
+      alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
+      initialLocation = siberia;
+    }
+    //map.setCenter(initialLocation);
+  }
+  return initialLocation
+}*/
+
 });
 
