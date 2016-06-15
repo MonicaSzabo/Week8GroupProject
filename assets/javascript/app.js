@@ -1,5 +1,10 @@
 $(document).ready(function() {
     var mapData = [];
+    var fb = new Firebase("https://events04.firebaseio.com/");
+
+    $('#key').html("<img src='http://maps.google.com/mapfiles/ms/icons/green-dot.png'> = Today" +
+     "<img src='http://maps.google.com/mapfiles/ms/icons/blue-dot.png'> = This Week" +
+     "<img src='http://maps.google.com/mapfiles/ms/icons/red-dot.png'> = After Next Week");
 
     function searchByCity() {
     	$('#new-city').on('submit', function(){
@@ -18,80 +23,85 @@ $(document).ready(function() {
 	                apikey: 'crQBBZznzX5Sn2R4',
 	            }
 	        }).done(function(response){
-	            var events = response.events.event;
-	            var description = "";
+                if(response.total_items > 0){
+                    var events = response.events.event;
+                    var description = "";
 
-	            for(var i = 0; i < events.length; i++) {
-	            	mapData.push({
-	            		name: events[i].title,
-	            		url: events[i].venue_url,
-	            		lat: events[i].latitude,
-	            		lng:  events[i].longitude});
+    	            for(var i = 0; i < events.length; i++) {
+                        //Calculates how many days until the event
+                        var daysDiff = moment(events[i].start_time).diff(moment(), "days");
+
+                        //Only will show days in the future, won't show past events or Testing Event, a false event in the API
+                        if(daysDiff > -1 && events[i].title !== "Testing Event") {
+
+                            mapData.push({
+                                name: events[i].title,
+                                url: events[i].venue_url,
+                                lat: events[i].latitude,
+                                lng:  events[i].longitude,
+                                daysAway: daysDiff
+                            });
 
 
-	           		$('#display').append("<a href=" + events[i].venue_url +" class='eventLink' data-url=" +
-	           			events[i].venue_url + " target='_blank'>" + events[i].title + "</a>" +
-						"<br>" + events[i].venue_address + "<br>" + events[i].city_name + ", " + events[i].region_abbr +
-						"<br>" + moment(events[i].start_time).format('MMMM Do YYYY, h:mm:ss A') + "<br><br>");
+                            $('#display').append("<a href=" + events[i].venue_url +" class='eventLink' data-url=" +
+                                events[i].venue_url + " target='_blank'>" + events[i].title + "</a>" +
+                                "<br>" + events[i].venue_address + "<br>" + events[i].city_name + ", " + events[i].region_abbr +
+                                "<br>" + moment(events[i].start_time).format('MMMM Do YYYY, h:mm A') + "<br><br>");
+                        }
+    	           	}
 
-	           	}
-
-	            console.log(mapData);
-                mapStuff(mapData);
+    	            console.log(mapData);
+                    mapStuff(mapData);
+                }
+                else {
+                    $('#display').append("Sorry! There are no events found for this request!");
+                }
 	        });
 
 	        return false;
 	    });
     }
 
-    function firebaseStore() {
-    	var fb = new Firebase("https://events04.firebaseio.com/");
+    function inDatabase(cityName) {
 
-    	var popEvents;
-    	var url = "";
-
-    	$('.eventLink').on('click', function() {
-    		var test = $(this).attr('data-url');
-
-    		fb.push({
-    			url: test,
-    		});
-
-    		console.log("Is this working");
-
-    		return false;
-
-    	});
-
-  //   	$('#my-form').on('submit', function() {
-		// 	name = $('#nameinput').val().trim();
-		// 	destination = $('#destinationinput').val().trim();
-		// 	firstTrainTime = $('#firstTraininput').val().trim();
-		// 	frequency = $('#frequencyinput').val().trim();
-
-		// 	fb.push({
-		// 		name: name,
-		// 		destination: destination,
-		// 		firstTrainTime: firstTrainTime,
-		// 		frequency: frequency,
-		// 	});
-
-		// 	//Reload needed for the removal to work on last element
-		// 	location.reload();
-		// 	return false;
-		// })
+        fb.push({
+            city: cityName
+        });
     }
 
+    $(function() {
+        var availableTags = [
+            "ActionScript",
+            "AppleScript",
+            "Asp",
+            "BASIC",
+            "C",
+            "C++",
+            "Clojure",
+            "COBOL",
+            "ColdFusion",
+            "Erlang",
+            "Fortran",
+            "Groovy",
+            "Haskell",
+            "Java",
+            "JavaScript",
+            "Lisp",
+            "Perl",
+            "PHP",
+            "Python",
+            "Ruby",
+            "Scala",
+            "Scheme"
+        ];
+        $("#city-input").autocomplete({
+            source: availableTags
+        });
+    });
+
     searchByCity();
-    firebaseStore();
 
     //==================================== map feature ========================================
-
-    //=============== dummy data needed from event API==================================
-
-    //dummy eventURL string
-    var urlString = "http://austin.eventful.com/venues/lake-austin-marina-/V0-001-009303062-2?utm_source=apis&utm_medium=apim&utm_campaign=apic"
-    //end dummy data ================================================================
 
     var map;
     var bounds = new google.maps.LatLngBounds();
@@ -103,9 +113,6 @@ $(document).ready(function() {
         center: {lat: 50.294797, lng: -97.739589},
         zoom: 10
         });
-        //initialLocation = initialize();
-        //map.setCenter(initialLocation);
-        //var x = new google.maps.Marker(initialLocation);
     })();
 
     function mapStuff(mapData) {
@@ -167,50 +174,6 @@ $(document).ready(function() {
         markersArray = [];
         bounds = new google.maps.LatLngBounds();
     }
-//=====================================================
-//geolocation==========================================
-//=====================================================
-/*var initialLocation;
-var siberia = new google.maps.LatLng(60, 105);
-var austin = new google.maps.LatLng(30.294797, -97.739589);
-var browserSupportFlag =  new Boolean();
-
-function initialize() {
-  var myOptions = {
-    zoom: 6,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-//  var map = new google.maps.Map(document.getElementById("map"), myOptions);
-map = new google.maps.Map(document.getElementById("map"), myOptions);
-  // Try W3C Geolocation (Preferred)
-  if(navigator.geolocation) {
-    browserSupportFlag = true;
-    navigator.geolocation.getCurrentPosition(function(position) {
-      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-      map.setCenter(initialLocation);
-    }, function(err) {
-      // handleNoGeolocation(browserSupportFlag);
-      console.log(err)
-    });
-  }
-  // Browser doesn't support Geolocation
-  else {
-    browserSupportFlag = false;
-    handleNoGeolocation(browserSupportFlag);
-  }
-
-  function handleNoGeolocation(errorFlag) {
-    if (errorFlag == true) {
-      alert("Geolocation service failed.");
-      initialLocation = austin;
-    } else {
-      alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
-      initialLocation = siberia;
-    }
-    //map.setCenter(initialLocation);
-  }
-  return initialLocation
-}*/
 
 });
 

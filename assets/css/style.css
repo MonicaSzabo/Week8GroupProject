@@ -11,9 +11,20 @@
     font-family: 'Roboto', sans-serif;
 }
 
+.nav-wrapper.container {
+  height: 100px;
+  
+}
+
 nav ul a,
 nav .brand-logo {
-  color: #444;
+  color: #fff;
+  font-family: 'Satisfy', cursive;
+  font-size: 50px; 
+}
+
+.blue {
+  height: 72px; 
 }
 
 .input[type=text] {
@@ -23,8 +34,9 @@ nav .brand-logo {
 }
 
 /* When the input field gets focus, change its width to 100% */
-input[type=text]:focus {
-    width: 100%;
+input[type=text]:focus{
+  border-bottom: 1px solid #2196f3  !important;
+  box-shadow: 0 1px 0 0 #2196f3  !important;
 }
 
 p {
@@ -36,7 +48,7 @@ p {
 }
 
 .parallax-container {
-  min-height: 380px;
+  min-height: 200px;
   line-height: 0;
   height: auto;
   color: rgba(255,255,255,.9);
@@ -68,11 +80,30 @@ p {
   font-size: inherit;
 }
 
-footer.page-footer {
+footer.footer-copyright {
   margin: 0;
+  background-color: #2196f3;
+  color: #FFF;  
+  height: 40px;
 }
 
 #map {
-  width: 500px;
+  width: 49%;
   height: 400px;
 }
+
+#display {
+  margin-left: 2%; 
+  width: 49%; 
+  height: 400px;
+  overflow: scroll; 
+
+}
+
+.ui-widget-content{
+  border: 1px solid #000;
+  background-color: #FFF;
+  width: 130px;
+}
+
+
