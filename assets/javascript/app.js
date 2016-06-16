@@ -101,28 +101,24 @@ $(document).ready(function() {
 
     searchByCity();
 
-
     //==================================== map feature ========================================
-
-    //=============== dummy data needed from event API==================================
-
-    //dummy eventURL string
-    var urlString = "http://austin.eventful.com/venues/lake-austin-marina-/V0-001-009303062-2?utm_source=apis&utm_medium=apim&utm_campaign=apic"
-    //end dummy data ================================================================
 
     var map;
     var bounds = new google.maps.LatLngBounds();
-
+    var markersArray = [];
     // map placeholder centered on Austin
     (function () {
         var mapDiv = document.getElementById('map');
         map = new google.maps.Map(mapDiv, {
-        center: {lat: 30.294797, lng: -97.739589},
+        center: {lat: 50.294797, lng: -97.739589},
         zoom: 10
         });
     })();
 
     function mapStuff(mapData) {
+        //just incase there are markers already on the map
+        //clear markers
+        clearMarkers(markersArray);
         // Display multiple markers on a map
         var infoWindow = new google.maps.InfoWindow(), marker, i;
 
@@ -140,7 +136,7 @@ $(document).ready(function() {
                 map: map,
                 title: mapData[i].name
             });
-
+            markersArray.push(marker);
             // Allow each marker to have an info window
             google.maps.event.addListener(marker, 'click', (function(marker, i) {
                 return function() {
@@ -156,11 +152,11 @@ $(document).ready(function() {
                 }
             })(marker, i));
             //add code to change the color desired
-            if(i === 0){
-                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
-            }
-            else if(i>0 && i<6){
+            if(mapData[i].daysAway === 0){
                 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+            }
+            else if(mapData[i].daysAway>0 && mapData.daysAway<7){
+                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
             }
             else{
                 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
@@ -170,5 +166,14 @@ $(document).ready(function() {
             }
         }
     };
+    function clearMarkers(markersArray){
+        //passed an array with the gogle maps marker objects saved when the markers are created
+        for (var i = 0; i < markersArray.length; i++) {
+            markersArray[i].setMap(null);
+        }
+        markersArray = [];
+        bounds = new google.maps.LatLngBounds();
+    }
+
 });
 
