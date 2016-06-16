@@ -152,11 +152,11 @@ $(document).ready(function() {
                 }
             })(marker, i));
             //add code to change the color desired
-            if(i === 0){
-                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
-            }
-            else if(i>0 && i<6){
+            if(mapData[i].daysAway === 0){
                 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+            }
+            else if(mapData[i].daysAway>0 && mapData.daysAway<7){
+                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
             }
             else{
                 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
