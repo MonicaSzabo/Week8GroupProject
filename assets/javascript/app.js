@@ -8,6 +8,9 @@ $(document).ready(function() {
      "<img src='http://maps.google.com/mapfiles/ms/icons/red-dot.png'> = After 4 Weeks");
 
     function searchByCity() {
+        setCities();
+        autoComplete();
+
     	$('#new-city').on('submit', function(){
 	        var queryCity = $('#city-input').val().trim().toLowerCase();
 	        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=" + queryCity;
@@ -64,7 +67,7 @@ $(document).ready(function() {
                 else {
                     $('#display').append("Sorry! There are no events found for this request!");
                     cities.pop(); 
-                    console.log("In if it didn't find anything: " + cities)
+
                     fb.set({
                         cities: cities
                     });
@@ -75,46 +78,44 @@ $(document).ready(function() {
 	    });
     }
 
-    fb.once('value', function(snapshot){ 
-        cities = snapshot.val().cities;
-    });
+    function setCities() {
+        fb.once('value', function(snapshot){ 
+            cities = snapshot.val().cities;
+        });
+    }
 
-
-    // $(function() {
-    //     $("#city-input").autocomplete({
-    //         source: cities
-    //     });
-    // });
-
-    // $(function() {
-    //     var availableTags = [
-    //     "ActionScript",
-    //     "AppleScript",
-    //     "Asp",
-    //     "BASIC",
-    //     "C",
-    //     "C++",
-    //     "Clojure",
-    //     "COBOL",
-    //     "ColdFusion",
-    //     "Erlang",
-    //     "Fortran",
-    //     "Groovy",
-    //     "Haskell",
-    //     "Java",
-    //     "JavaScript",
-    //     "Lisp",
-    //     "Perl",
-    //     "PHP",
-    //     "Python",
-    //     "Ruby",
-    //     "Scala",
-    //     "Scheme"
-    //     ];
-    // $("#city-input").autocomplete({
-    //     source: availableTags
-    // });
-
+    function autoComplete(){
+        setCities();
+        console.log("Cities in this autocomplete function: " + cities);
+        var availableTags = [
+        "Austin",
+        "Chicago",
+        "Denver",
+        "Montreal",
+        "Los Angeles",
+        "C++",
+        "Clojure",
+        "COBOL",
+        "ColdFusion",
+        "Erlang",
+        "Fortran",
+        "Groovy",
+        "Haskell",
+        "Java",
+        "JavaScript",
+        "Lisp",
+        "Perl",
+        "PHP",
+        "Python",
+        "Ruby",
+        "Scala",
+        "Scheme"
+        ];
+        $("#city-input").autocomplete({
+            source: availableTags
+        });
+    }
+    
     searchByCity();
 
     //==================================== map feature ========================================
