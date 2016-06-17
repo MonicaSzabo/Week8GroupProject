@@ -15,9 +15,9 @@ $(document).ready(function() {
             isDuplicate();
             cities.push(queryCity);
 
-            fb.set({
-                cities: cities
-            });
+            //fb.set({
+            //    cities: cities
+            //});
 
 	        mapData = [];
 	        $('#display').empty();
