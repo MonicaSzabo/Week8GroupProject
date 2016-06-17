@@ -53,9 +53,16 @@ p {
   height: auto;
   color: rgba(255,255,255,.9);
 }
-  .parallax-container .section {
+
+.parallax-container .section {
     width: 100%;
-  }
+}
+
+#colorBox {
+  height: 280px; 
+  width: 100%;
+   
+}
 
 @media only screen and (max-width : 992px) {
   .parallax-container .section {
@@ -108,7 +115,7 @@ footer.footer-copyright {
 }
 
 #key {
-  margin-left: 18%;
+  margin-left: 0;
   width: 49%; 
  
 }
