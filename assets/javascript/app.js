@@ -1,17 +1,20 @@
 $(document).ready(function() {
-    var mapData = [];
+    var mapData = [];   //Holds the data for the map from the Eventful API
     var fb = new Firebase("https://events04.firebaseio.com/");
-    var cities = [];
+    var cities = [];    //Holds the cities that people have searched and found
 
+    //Sets the Key div to show the user what the different markers mean
     $('#key').html("<img src='http://maps.google.com/mapfiles/ms/icons/green-dot.png'> = This Week" +
      "<img src='http://maps.google.com/mapfiles/ms/icons/blue-dot.png'> = Next 4 Weeks" +
      "<img src='http://maps.google.com/mapfiles/ms/icons/red-dot.png'> = After 4 Weeks");
 
+    //The function that will pull up the cities
     function searchByCity() {
     	$('#new-city').on('submit', function(){
 	        var queryCity = $('#city-input').val().trim().toLowerCase();
 	        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=" + queryCity;
 
+            //If the city has not been searched before, it adds it to the database and the array cities
             if(cities.indexOf(queryCity) == -1) {
                 cities.push(queryCity);
 
@@ -20,6 +23,7 @@ $(document).ready(function() {
                 });
             }
 
+            //Clears the data from previous searches
 	        mapData = [];
 	        $('#display').empty();
 
@@ -32,9 +36,10 @@ $(document).ready(function() {
 	                apikey: 'crQBBZznzX5Sn2R4',
 	            }
 	        }).done(function(response){
+                //Will only work if there are results in the JSON
                 if(response.total_items > 0){
+                    //Holds the events array from the Eventful JSON
                     var events = response.events.event;
-                    var description = "";
 
     	            for(var i = 0; i < events.length; i++) {
                         //Calculates how many days until the event
@@ -43,6 +48,7 @@ $(document).ready(function() {
                         //Only will show days in the future, won't show past events or Testing Event, a false event in the API
                         if(daysDiff > -1 && events[i].title !== "Testing Event") {
 
+                            //Adds the data to the mapData array for later use by the map
                             mapData.push({
                                 name: events[i].title,
                                 url: events[i].venue_url,
@@ -51,7 +57,7 @@ $(document).ready(function() {
                                 daysAway: daysDiff
                             });
 
-
+                            //Shows the different events on the page
                             $('#display').append("<a href=" + events[i].venue_url +" class='eventLink' data-url=" +
                                 events[i].venue_url + " target='_blank'>" + events[i].title + "</a>" +
                                 "<br>" + events[i].venue_address + "<br>" + events[i].city_name + ", " + events[i].region_abbr +
@@ -59,10 +65,14 @@ $(document).ready(function() {
                         }
     	           	}
 
+                    //Calls mapStuff with the mapData array
                     mapStuff(mapData);
                 }
+                //If there are no events at that city
                 else {
                     $('#display').append("Sorry! There are no events found for this request!");
+
+                    //It will remove the city from cities and reset the database to get rid of search
                     cities.pop(); 
 
                     fb.set({
@@ -70,11 +80,12 @@ $(document).ready(function() {
                     });
                 }
 	        });
-
+            //Need for the form submission so it stays on the page
 	        return false;
 	    });
     }
 
+    //Using jQuery UI, it will pull up the cities from our database as possible choices for the user
     function autoComplete() {
         var availableTags = cities;
 
@@ -83,12 +94,15 @@ $(document).ready(function() {
         }); 
     }
 
+    //Sets cities to be equal to the database of cities for persistant data
     fb.once('value', function(snapshot){ 
         cities = snapshot.val().cities;
 
+        //Calls autoComplete after setting cities to equal the database
         autoComplete();
     });
 
+    //The function for the strobeLight effect
     function strobeLight() {
         var colorChange = document.getElementById("colorBox");
 
@@ -96,8 +110,6 @@ $(document).ready(function() {
         "green","seaGreen","blue","blueViolet","violet","mediumVioletRed", "pink"];
 
         counter = 0;
-        // colorChange.style.height = "280px";
-        // colorChange.style.width = "100%";
         colorChange.style.background = "red";
 
         colorChange.style.transition = "background 1s";
@@ -115,6 +127,7 @@ $(document).ready(function() {
         var colorToChange = setInterval(changeColorBackground, 2000);
     }
 
+    //Calls searchByCity and strobeLight on load
     searchByCity();
     strobeLight();
 
@@ -127,7 +140,7 @@ $(document).ready(function() {
     (function () {
         var mapDiv = document.getElementById('map');
         map = new google.maps.Map(mapDiv, {
-        center: {lat: 50.294797, lng: -97.739589},
+        center: {lat: 30.294797, lng: -97.739589},
         zoom: 10
         });
     })();
