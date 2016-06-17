@@ -75,37 +75,18 @@ $(document).ready(function() {
 	    });
     }
 
+    function autoComplete() {
+        var availableTags = cities;
+
+        $("#city-input").autocomplete({
+            source: availableTags
+        }); 
+    }
 
     fb.once('value', function(snapshot){ 
         cities = snapshot.val().cities;
-    });
 
-    console.log("Cities in this autocomplete function: " + cities);
-    var availableTags = [
-    "Austin",
-    "Boston",
-    "Boulder",
-    "Cheyenne",        
-    "Chicago",
-    "Dallas",
-    "Denver",
-    "Detroit",
-    "Greenville",
-    "Houston",
-    "Las Vegas",
-    "London",
-    "Los Angeles",
-    "Madison",
-    "Montreal",
-    "New Orleans",
-    "New York City", 
-    "Richmond",
-    "Rochester",
-    "Salt Lake City",
-    "Vancouver",
-    ];
-    $("#city-input").autocomplete({
-        source: availableTags
+        autoComplete();
     });
 
     function strobeLight() {
@@ -133,9 +114,9 @@ $(document).ready(function() {
 
         var colorToChange = setInterval(changeColorBackground, 2000);
     }
-    
-    strobeLight();
+
     searchByCity();
+    strobeLight();
 
     //==================================== map feature ========================================
 
@@ -165,41 +146,45 @@ $(document).ready(function() {
                 console.log("mapData[i].lat = "+mapData[i].lat + " mapData[i].lng = " + mapData[i].lng + " i = "+i)
             }
             else{
-                            var position = new google.maps.LatLng(mapData[i].lat, mapData[i].lng);
-            bounds.extend(position);
-            marker = new google.maps.Marker({
-                position: position,
-                map: map,
-                title: mapData[i].name
-            });
-            markersArray.push(marker);
-            // Allow each marker to have an info window
-            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                var position = new google.maps.LatLng(mapData[i].lat, mapData[i].lng);
+                bounds.extend(position);
+
+                marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: mapData[i].name
+                });
+
+                markersArray.push(marker);
+                // Allow each marker to have an info window
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
                 return function() {
-                    //infoWindow.setContent(infoWindowContent[i][0]);
-                    infoWindow.setContent('<div class="info_content">' +
-                                        '<p><a href="'+mapData[i].url+'" target="_blank">' + mapData[i].name + '</a></p>'+
-                                        '</div>');
-                    marker.addListener('click', function() {
-                        infoWindow.open(map, marker);
-                    });
+                        //infoWindow.setContent(infoWindowContent[i][0]);
+                        infoWindow.setContent('<div class="info_content">' +
+                                            '<p><a href="'+mapData[i].url+'" target="_blank">' + mapData[i].name + '</a></p>'+
+                                            '</div>');
+                        marker.addListener('click', function() {
+                            infoWindow.open(map, marker);
+                        });
+                    }
+                })(marker, i));
+
+                //add code to change the color desired
+                if(mapData[i].daysAway>=0 && mapData[i].daysAway<7){
+                    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
                 }
-            })(marker, i));
-            //add code to change the color desired
-            if(mapData[i].daysAway>=0 && mapData.daysAway<7){
-                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
-            }
-            else if(mapData[i].daysAway>6 && mapData.daysAway<28){
-                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
-            }
-            else{
-                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
-            }
-            // Automatically center the map fitting all markers on the screen
-            map.fitBounds(bounds);
+                else if(mapData[i].daysAway>6 && mapData[i].daysAway<28){
+                    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
+                }
+                else{
+                    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
+                }
+                // Automatically center the map fitting all markers on the screen
+                map.fitBounds(bounds);
             }
         }
-    };
+    }
+
     function clearMarkers(markersArray){
         //passed an array with the gogle maps marker objects saved when the markers are created
         for (var i = 0; i < markersArray.length; i++) {
