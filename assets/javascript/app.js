@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var mapData = [];
     var fb = new Firebase("https://events04.firebaseio.com/");
-    var cities = ["austin", "chicago"];
+    var cities = [];
 
     $('#key').html("<img src='http://maps.google.com/mapfiles/ms/icons/green-dot.png'> = Today" +
      "<img src='http://maps.google.com/mapfiles/ms/icons/blue-dot.png'> = Next 2 Weeks" +
@@ -12,7 +12,7 @@ $(document).ready(function() {
 	        var queryCity = $('#city-input').val().trim().toLowerCase();
 	        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=" + queryCity;
 
-            console.log(queryCity);
+            isDuplicate();
             cities.push(queryCity);
 
             fb.set({
@@ -68,6 +68,20 @@ $(document).ready(function() {
 
 	        return false;
 	    });
+    }
+
+    function isDuplicate() {
+        for(i = 0; i < cities.length; i++){
+            for(k = 0; k < cities.length; k++){
+                if(i !== k) {
+                    if (cities[i] == cities[k]){
+                        cities.splice(k, 1);
+                        console.log(cities);
+                    }
+                }
+            }
+        }
+        console.log(cities);
     }
 
     fb.once('value', function(snapshot){ 
