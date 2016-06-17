@@ -48,7 +48,7 @@ p {
 }
 
 .parallax-container {
-  min-height: 200px;
+  min-height: 300px;
   line-height: 0;
   height: auto;
   color: rgba(255,255,255,.9);
@@ -104,6 +104,13 @@ footer.footer-copyright {
   border: 1px solid #000;
   background-color: #FFF;
   width: 130px;
+  text-transform: capitalize;
+}
+
+#key {
+  margin-left: 18%;
+  width: 49%; 
+ 
 }
 
 
