@@ -1,15 +1,23 @@
 $(document).ready(function() {
     var mapData = [];
     var fb = new Firebase("https://events04.firebaseio.com/");
+    var cities = [];
 
     $('#key').html("<img src='http://maps.google.com/mapfiles/ms/icons/green-dot.png'> = Today" +
-     "<img src='http://maps.google.com/mapfiles/ms/icons/blue-dot.png'> = This Week" +
-     "<img src='http://maps.google.com/mapfiles/ms/icons/red-dot.png'> = After Next Week");
+     "<img src='http://maps.google.com/mapfiles/ms/icons/blue-dot.png'> = Next 2 Weeks" +
+     "<img src='http://maps.google.com/mapfiles/ms/icons/red-dot.png'> = After 2 Weeks");
 
     function searchByCity() {
     	$('#new-city').on('submit', function(){
-	        var queryCity = $('#city-input').val().trim();
+	        var queryCity = $('#city-input').val().trim().toLowerCase();
 	        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=" + queryCity;
+
+            isDuplicate();
+            cities.push(queryCity);
+
+            fb.set({
+                cities: cities
+            });
 
 	        mapData = [];
 	        $('#display').empty();
@@ -62,40 +70,28 @@ $(document).ready(function() {
 	    });
     }
 
-    function inDatabase(cityName) {
-
-        fb.push({
-            city: cityName
-        });
+    function isDuplicate() {
+        for(i = 0; i < cities.length; i++){
+            for(k = 0; k < cities.length; k++){
+                if(i !== k) {
+                    if (cities[i] == cities[k]){
+                        cities.splice(k, 1);
+                        console.log(cities);
+                    }
+                }
+            }
+        }
+        console.log(cities);
     }
 
+    fb.once('value', function(snapshot){ 
+        console.log(snapshot.val().cities);
+        cities = snapshot.val().cities;
+    });
+
     $(function() {
-        var availableTags = [
-            "ActionScript",
-            "AppleScript",
-            "Asp",
-            "BASIC",
-            "C",
-            "C++",
-            "Clojure",
-            "COBOL",
-            "ColdFusion",
-            "Erlang",
-            "Fortran",
-            "Groovy",
-            "Haskell",
-            "Java",
-            "JavaScript",
-            "Lisp",
-            "Perl",
-            "PHP",
-            "Python",
-            "Ruby",
-            "Scala",
-            "Scheme"
-        ];
         $("#city-input").autocomplete({
-            source: availableTags
+            source: cities
         });
     });
 
@@ -155,7 +151,7 @@ $(document).ready(function() {
             if(mapData[i].daysAway === 0){
                 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
             }
-            else if(mapData[i].daysAway>0 && mapData.daysAway<7){
+            else if(mapData[i].daysAway>0 && mapData.daysAway<14){
                 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
             }
             else{
