@@ -3,21 +3,22 @@ $(document).ready(function() {
     var fb = new Firebase("https://events04.firebaseio.com/");
     var cities = [];
 
-    $('#key').html("<img src='http://maps.google.com/mapfiles/ms/icons/green-dot.png'> = Today" +
-     "<img src='http://maps.google.com/mapfiles/ms/icons/blue-dot.png'> = Next 2 Weeks" +
-     "<img src='http://maps.google.com/mapfiles/ms/icons/red-dot.png'> = After 2 Weeks");
+    $('#key').html("<img src='http://maps.google.com/mapfiles/ms/icons/green-dot.png'> = This Week" +
+     "<img src='http://maps.google.com/mapfiles/ms/icons/blue-dot.png'> = Next 4 Weeks" +
+     "<img src='http://maps.google.com/mapfiles/ms/icons/red-dot.png'> = After 4 Weeks");
 
     function searchByCity() {
     	$('#new-city').on('submit', function(){
 	        var queryCity = $('#city-input').val().trim().toLowerCase();
 	        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=" + queryCity;
 
-            isDuplicate();
-            cities.push(queryCity);
+            if(cities.indexOf(queryCity) == -1) {
+                cities.push(queryCity);
 
-            //fb.set({
-            //    cities: cities
-            //});
+                fb.set({
+                    cities: cities
+                });
+            }
 
 	        mapData = [];
 	        $('#display').empty();
@@ -58,11 +59,15 @@ $(document).ready(function() {
                         }
     	           	}
 
-    	            console.log(mapData);
                     mapStuff(mapData);
                 }
                 else {
                     $('#display').append("Sorry! There are no events found for this request!");
+                    cities.pop(); 
+                    console.log("In if it didn't find anything: " + cities)
+                    fb.set({
+                        cities: cities
+                    });
                 }
 	        });
 
@@ -70,30 +75,45 @@ $(document).ready(function() {
 	    });
     }
 
-    function isDuplicate() {
-        for(i = 0; i < cities.length; i++){
-            for(k = 0; k < cities.length; k++){
-                if(i !== k) {
-                    if (cities[i] == cities[k]){
-                        cities.splice(k, 1);
-                        console.log(cities);
-                    }
-                }
-            }
-        }
-        console.log(cities);
-    }
-
     fb.once('value', function(snapshot){ 
-        console.log(snapshot.val().cities);
         cities = snapshot.val().cities;
     });
 
-    $(function() {
-        $("#city-input").autocomplete({
-            source: cities
-        });
-    });
+
+    // $(function() {
+    //     $("#city-input").autocomplete({
+    //         source: cities
+    //     });
+    // });
+
+    // $(function() {
+    //     var availableTags = [
+    //     "ActionScript",
+    //     "AppleScript",
+    //     "Asp",
+    //     "BASIC",
+    //     "C",
+    //     "C++",
+    //     "Clojure",
+    //     "COBOL",
+    //     "ColdFusion",
+    //     "Erlang",
+    //     "Fortran",
+    //     "Groovy",
+    //     "Haskell",
+    //     "Java",
+    //     "JavaScript",
+    //     "Lisp",
+    //     "Perl",
+    //     "PHP",
+    //     "Python",
+    //     "Ruby",
+    //     "Scala",
+    //     "Scheme"
+    //     ];
+    // $("#city-input").autocomplete({
+    //     source: availableTags
+    // });
 
     searchByCity();
 
@@ -138,9 +158,7 @@ $(document).ready(function() {
                 return function() {
                     //infoWindow.setContent(infoWindowContent[i][0]);
                     infoWindow.setContent('<div class="info_content">' +
-                                        '<h3>' + mapData[i].name+'</h3>' +
-                                        '<p>' + mapData[i].name+'</p>' +
-                                        '<p><a href="'+mapData[i].url+'" target="_blank">Click to open Event URL in new tab</a></p>'+
+                                        '<p><a href="'+mapData[i].url+'" target="_blank">' + mapData[i].name + '</a></p>'+
                                         '</div>');
                     marker.addListener('click', function() {
                         infoWindow.open(map, marker);
@@ -148,10 +166,10 @@ $(document).ready(function() {
                 }
             })(marker, i));
             //add code to change the color desired
-            if(mapData[i].daysAway === 0){
+            if(mapData[i].daysAway>=0 && mapData.daysAway<7){
                 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
             }
-            else if(mapData[i].daysAway>0 && mapData.daysAway<14){
+            else if(mapData[i].daysAway>6 && mapData.daysAway<28){
                 marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
             }
             else{
