@@ -120,4 +120,13 @@ footer.footer-copyright {
  
 }
 
+.ui-autocomplete {
+  max-height: 100px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+* html .ui-autocomplete {
+  height: 100px;
+}
+
 

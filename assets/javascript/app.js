@@ -8,9 +8,6 @@ $(document).ready(function() {
      "<img src='http://maps.google.com/mapfiles/ms/icons/red-dot.png'> = After 4 Weeks");
 
     function searchByCity() {
-        setCities();
-        autoComplete();
-
     	$('#new-city').on('submit', function(){
 	        var queryCity = $('#city-input').val().trim().toLowerCase();
 	        var queryURL = "http://api.eventful.com/json/events/search?app_key=crQBBZznzX5Sn2R4&location=" + queryCity;
@@ -78,44 +75,66 @@ $(document).ready(function() {
 	    });
     }
 
-    function setCities() {
-        fb.once('value', function(snapshot){ 
-            cities = snapshot.val().cities;
-        });
-    }
 
-    function autoComplete(){
-        setCities();
-        console.log("Cities in this autocomplete function: " + cities);
-        var availableTags = [
-        "Austin",
-        "Chicago",
-        "Denver",
-        "Montreal",
-        "Los Angeles",
-        "C++",
-        "Clojure",
-        "COBOL",
-        "ColdFusion",
-        "Erlang",
-        "Fortran",
-        "Groovy",
-        "Haskell",
-        "Java",
-        "JavaScript",
-        "Lisp",
-        "Perl",
-        "PHP",
-        "Python",
-        "Ruby",
-        "Scala",
-        "Scheme"
-        ];
-        $("#city-input").autocomplete({
-            source: availableTags
-        });
+    fb.once('value', function(snapshot){ 
+        cities = snapshot.val().cities;
+    });
+
+    console.log("Cities in this autocomplete function: " + cities);
+    var availableTags = [
+    "Austin",
+    "Boston",
+    "Boulder",
+    "Cheyenne",        
+    "Chicago",
+    "Dallas",
+    "Denver",
+    "Detroit",
+    "Greenville",
+    "Houston",
+    "Las Vegas",
+    "London",
+    "Los Angeles",
+    "Madison",
+    "Montreal",
+    "New Orleans",
+    "New York City", 
+    "Richmond",
+    "Rochester",
+    "Salt Lake City",
+    "Vancouver",
+    ];
+    $("#city-input").autocomplete({
+        source: availableTags
+    });
+
+    function strobeLight() {
+        var colorChange = document.getElementById("colorBox");
+
+        var color = ["red","OrangeRed","Tomato","orange", "yellow", "greenYellow", "yellowGreen",
+        "green","seaGreen","blue","blueViolet","violet","mediumVioletRed", "pink"];
+
+        counter = 0;
+        // colorChange.style.height = "280px";
+        // colorChange.style.width = "100%";
+        colorChange.style.background = "red";
+
+        colorChange.style.transition = "background 1s";
+
+
+        function changeColorBackground() {
+            counter++;
+            if(counter === color.length-1){
+                counter = 0;
+            }
+            
+            colorChange.style.background = color[counter];
+        }
+
+        var colorToChange = setInterval(changeColorBackground, 2000);
     }
     
+    strobeLight();
     searchByCity();
 
     //==================================== map feature ========================================
