@@ -124,7 +124,7 @@ $(document).ready(function() {
             colorChange.style.background = color[counter];
         }
 
-        var colorToChange = setInterval(changeColorBackground, 2000);
+        var colorToChange = setInterval(changeColorBackground, 200);
     }
 
     //Calls searchByCity and strobeLight on load
